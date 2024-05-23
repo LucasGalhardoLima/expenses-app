@@ -56,7 +56,9 @@ function App() {
         />
       </Layout.Desktop>
 
-      <Layout.MobileHeader title="Dashboard" onClick={handleOpenSideBar} />
+      <Layout.MobileHeader onClick={handleOpenSideBar}>
+        <Layout.MobileHeaderTitle text="Dashboard" />
+      </Layout.MobileHeader>
 
       <Layout.Mobile show={sidebarOpen} onClose={handleCloseSideBar}>
         <Layout.Header>

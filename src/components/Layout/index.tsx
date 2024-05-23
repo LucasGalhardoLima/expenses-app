@@ -6,6 +6,7 @@ import { LayoutHeader } from './LayoutHeader';
 import { LayoutDesktop } from './LayoutDesktop';
 import { LayoutTitle } from './LayoutTitle';
 import { LayoutMobileHeader } from './LayoutMobileHeader';
+import { LayoutMobileHeaderTitle } from './LayoutMobileHeaderTitle';
 
 export const Layout = {
   Root: LayoutRoot,
@@ -16,4 +17,5 @@ export const Layout = {
   Desktop: LayoutDesktop,
   Title: LayoutTitle,
   MobileHeader: LayoutMobileHeader,
+  MobileHeaderTitle: LayoutMobileHeaderTitle,
 };
