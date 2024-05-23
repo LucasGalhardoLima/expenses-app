@@ -1,30 +1,21 @@
-import React from "react";
-import logo from "./logo.svg";
+import { Routes, Route } from "react-router-dom";
 import "./App.css";
-import { Button } from "./Button";
+import { Home } from "./pages/Home";
+import { NoMatch } from "./pages/NoMatch";
+import { Layout } from "./components/Layout";
+import { Expenses } from "./pages/Expenses";
+import { Income } from "./pages/Income";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <h1 className="text-2xl font-bold underline">Hello world!</h1>
-        <Button.Root>
-          <Button.Content text="Click me!" />
-        </Button.Root>
-      </header>
-    </div>
+    <Layout>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/expenses" element={<Expenses />} />
+        <Route path="/income" element={<Income />} />
+        <Route path="*" element={<NoMatch />} />
+      </Routes>
+    </Layout>
   );
 }
 
