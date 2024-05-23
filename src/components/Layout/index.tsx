@@ -94,7 +94,11 @@ export const Layout = ({ children }: LayoutProps) => {
                           <ul className="-mx-2 space-y-1">
                             {navigation.map((item) => (
                               <li key={item.name}>
-                                <CustomLink to={item.href} icon={item.icon}>
+                                <CustomLink
+                                  to={item.href}
+                                  icon={item.icon}
+                                  onClick={() => setSidebarOpen(false)}
+                                >
                                   {item.name}
                                 </CustomLink>
                               </li>

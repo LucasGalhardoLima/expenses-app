@@ -10,6 +10,7 @@ export const CustomLink = ({
   children,
   to,
   icon: Icon,
+  onClick,
   ...props
 }: CustomLinkProps) => {
   let resolved = useResolvedPath(to);
@@ -25,6 +26,7 @@ export const CustomLink = ({
           "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
         )}
         to={to}
+        onClick={onClick}
         {...props}
       >
         <Icon
