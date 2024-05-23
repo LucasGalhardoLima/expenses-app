@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import { CustomLink } from '../CustomLink';
 
 interface LayoutNavigationProps {
@@ -15,6 +17,7 @@ export const LayoutNavigation = ({
   navigation,
   onClick,
 }: LayoutNavigationProps) => {
+  const { t } = useTranslation();
   return (
     <nav className="flex flex-1 flex-col">
       <ul className="flex flex-1 flex-col gap-y-7">
@@ -25,10 +28,9 @@ export const LayoutNavigation = ({
                 <CustomLink
                   to={item.href}
                   icon={item.icon}
-                  //   onClick={() => setSidebarOpen(false)}
                   onClick={onClick}
                 >
-                  {item.name}
+                  {t(`${item.name.toLocaleLowerCase()}.title`)}
                 </CustomLink>
               </li>
             ))}
