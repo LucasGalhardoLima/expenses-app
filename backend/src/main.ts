@@ -14,7 +14,9 @@ async function bootstrap() {
       'http://localhost:3002',
       'http://localhost:3003',
       'http://localhost:5173',
-    ], // Added port 3002 for frontend
+      /\.railway\.app$/,
+      /\.vercel\.app$/,
+    ],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
     credentials: true,
