@@ -110,9 +110,12 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
 
   const onSubmit = async (data: TransactionFormData) => {
     try {
+      // Converter o valor para decimal com 2 casas decimais e garantir formato string
+      const formattedAmount = parseFloat(data.amount).toFixed(2);
+      
       const transactionData: CreateTransactionDto = {
         ...data,
-        amount: parseFloat(data.amount),
+        amount: formattedAmount, // Envia como string com 2 casas decimais
       };
 
       if (isEditing && transactionId) {
@@ -197,15 +200,20 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
                   <input
                     type="number"
                     step="0.01"
+                    min="0.01"
                     {...register('amount', { 
                       required: 'Valor é obrigatório',
-                      min: { value: 0.01, message: 'Valor deve ser maior que 0' }
+                      min: { value: 0.01, message: 'Valor deve ser maior que 0' },
+                      pattern: {
+                        value: /^\d+(\.\d{1,2})?$/,
+                        message: 'Formato inválido. Use formato: 10.50'
+                      }
                     })}
                     className={cn(
                       "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
                       errors.amount && "border-red-300 focus:border-red-500 focus:ring-red-500"
                     )}
-                    placeholder="0,00"
+                    placeholder="10.50"
                   />
                   {errors.amount && (
                     <p className="mt-1 text-sm text-red-600">{errors.amount.message}</p>

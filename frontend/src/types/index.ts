@@ -32,7 +32,7 @@ export interface Transaction {
 
 export interface CreateTransactionDto {
   date: string;
-  amount: number;
+  amount: string; // Changed to string to match backend validation
   type: TransactionType;
   description?: string;
   categoryId: string;
@@ -40,7 +40,7 @@ export interface CreateTransactionDto {
 
 export interface UpdateTransactionDto {
   date?: string;
-  amount?: number;
+  amount?: string; // Changed to string to match backend validation
   type?: TransactionType;
   description?: string;
   categoryId?: string;
