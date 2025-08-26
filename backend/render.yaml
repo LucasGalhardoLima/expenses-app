@@ -4,11 +4,20 @@ services:
     name: expenses-app-backend
     runtime: node
     plan: starter
-    buildCommand: npm install && npx prisma generate && npm run build
-    startCommand: npm run start:prod
+    region: oregon # ou virginia se preferir
+    branch: main
+    buildCommand: npm ci && npx prisma generate && npm run build
+    startCommand: npm run start:prod:migrate
     envVars:
       - key: NODE_VERSION
         value: "20"
       - key: NODE_ENV
         value: production
     healthCheckPath: /health
+    
+# Para banco de dados PostgreSQL (caso queira hospedar no Render também)
+databases:
+  - name: expenses-app-db
+    databaseName: expenses_app
+    user: expenses_user
+    plan: starter
