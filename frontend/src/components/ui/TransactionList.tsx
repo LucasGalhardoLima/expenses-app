@@ -59,7 +59,7 @@ const TransactionList: React.FC<TransactionListProps> = ({
   return (
     <div className="glass-effect rounded-2xl p-6">
       <h2 className="text-lg font-semibold text-gray-900 mb-4">
-        Recent Transactions
+        Transações Recentes
       </h2>
       
       <div className="space-y-3">

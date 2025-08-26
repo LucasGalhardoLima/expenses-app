@@ -6,6 +6,7 @@ import { creditCardApi } from '../../api';
 import { CreateCreditCardTransactionDto } from '../../types';
 import { format } from 'date-fns';
 import { cn } from '../../lib/utils';
+import CurrencyInput from '../ui/CurrencyInput';
 
 interface CreditCardTransactionModalProps {
   isOpen: boolean;
@@ -35,8 +36,11 @@ const CreditCardTransactionModal: React.FC<CreditCardTransactionModalProps> = ({
     register,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { errors }
   } = useForm<TransactionFormData>({
+    mode: 'onChange',
     defaultValues: {
       date: format(new Date(), 'yyyy-MM-dd'),
       amount: '',
@@ -44,6 +48,18 @@ const CreditCardTransactionModal: React.FC<CreditCardTransactionModalProps> = ({
       categoryId: '',
       installments: '1',
       currentInstallment: '1',
+    }
+  });
+
+  // Register amount field with validation
+  register('amount', { 
+    required: 'Valor é obrigatório',
+    validate: (value) => {
+      const numValue = parseFloat(value);
+      if (isNaN(numValue) || numValue <= 0) {
+        return 'Valor deve ser maior que 0';
+      }
+      return true;
     }
   });
 
@@ -120,17 +136,10 @@ const CreditCardTransactionModal: React.FC<CreditCardTransactionModalProps> = ({
                   >
                     Valor
                   </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    {...register('amount', { 
-                      required: 'Valor é obrigatório',
-                      min: { value: 0.01, message: 'Valor deve ser maior que 0' }
-                    })}
-                    className={cn(
-                      "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
-                      errors.amount && "border-red-300 focus:border-red-500 focus:ring-red-500"
-                    )}
+                  <CurrencyInput
+                    value={watch('amount') || ''}
+                    onChange={(value) => setValue('amount', value, { shouldValidate: true })}
+                    error={!!errors.amount}
                     placeholder="0,00"
                   />
                   {errors.amount && (

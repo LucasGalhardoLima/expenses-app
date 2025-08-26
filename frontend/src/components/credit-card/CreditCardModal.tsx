@@ -5,6 +5,7 @@ import { X } from 'lucide-react';
 import { creditCardApi } from '../../api';
 import { CreateCreditCardDto } from '../../types';
 import { cn } from '../../lib/utils';
+import CurrencyInput from '../ui/CurrencyInput';
 
 interface CreditCardModalProps {
   isOpen: boolean;
@@ -31,14 +32,29 @@ const CreditCardModal: React.FC<CreditCardModalProps> = ({
     register,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { errors }
   } = useForm<CreditCardFormData>({
+    mode: 'onChange',
     defaultValues: {
       name: '',
       limit: '',
       closingDay: '1',
       dueDay: '10',
       color: '#3B82F6',
+    }
+  });
+
+  // Register limit field with validation
+  register('limit', { 
+    required: 'Limite é obrigatório',
+    validate: (value) => {
+      const numValue = parseFloat(value);
+      if (isNaN(numValue) || numValue <= 0) {
+        return 'Limite deve ser maior que 0';
+      }
+      return true;
     }
   });
 
@@ -131,17 +147,10 @@ const CreditCardModal: React.FC<CreditCardModalProps> = ({
                   >
                     Limite
                   </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    {...register('limit', { 
-                      required: 'Limite é obrigatório',
-                      min: { value: 0.01, message: 'Limite deve ser maior que 0' }
-                    })}
-                    className={cn(
-                      "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
-                      errors.limit && "border-red-300 focus:border-red-500 focus:ring-red-500"
-                    )}
+                  <CurrencyInput
+                    value={watch('limit') || ''}
+                    onChange={(value) => setValue('limit', value, { shouldValidate: true })}
+                    error={!!errors.limit}
                     placeholder="0,00"
                   />
                   {errors.limit && (

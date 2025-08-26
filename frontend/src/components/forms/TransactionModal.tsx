@@ -6,6 +6,7 @@ import { transactionApi } from '../../api';
 import { Category, CreateTransactionDto, TransactionType } from '../../types';
 import { format } from 'date-fns';
 import { cn } from '../../lib/utils';
+import CurrencyInput from '../ui/CurrencyInput';
 
 interface TransactionModalProps {
   isOpen: boolean;
@@ -38,14 +39,28 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
     handleSubmit,
     reset,
     watch,
+    setValue,
     formState: { errors }
   } = useForm<TransactionFormData>({
+    mode: 'onChange',
     defaultValues: {
       date: format(new Date(), 'yyyy-MM-dd'),
       type: TransactionType.EXPENSE,
       amount: '',
       description: '',
       categoryId: '',
+    }
+  });
+
+  // Register amount field with validation
+  register('amount', { 
+    required: 'Valor é obrigatório',
+    validate: (value) => {
+      const numValue = parseFloat(value);
+      if (isNaN(numValue) || numValue <= 0) {
+        return 'Valor deve ser maior que 0';
+      }
+      return true;
     }
   });
 
@@ -197,23 +212,11 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
                   >
                     Valor
                   </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    min="0.01"
-                    {...register('amount', { 
-                      required: 'Valor é obrigatório',
-                      min: { value: 0.01, message: 'Valor deve ser maior que 0' },
-                      pattern: {
-                        value: /^\d+(\.\d{1,2})?$/,
-                        message: 'Formato inválido. Use formato: 10.50'
-                      }
-                    })}
-                    className={cn(
-                      "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
-                      errors.amount && "border-red-300 focus:border-red-500 focus:ring-red-500"
-                    )}
-                    placeholder="10.50"
+                  <CurrencyInput
+                    value={watch('amount') || ''}
+                    onChange={(value) => setValue('amount', value, { shouldValidate: true })}
+                    error={!!errors.amount}
+                    placeholder="0,00"
                   />
                   {errors.amount && (
                     <p className="mt-1 text-sm text-red-600">{errors.amount.message}</p>
