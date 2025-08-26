@@ -11,7 +11,7 @@ cmds = [
 cmds = ['npm run build']
 
 [start]
-cmd = 'sh -c "npx prisma migrate deploy || echo \"Migration failed, continuing...\" && npm run start:prod"'
+cmd = 'npm run start:prod'
 
 [variables]
 NODE_ENV = 'production'
