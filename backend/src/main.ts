@@ -29,6 +29,9 @@ async function bootstrap() {
   app.useGlobalInterceptors(new PrismaRetryInterceptor());
 
   await app.listen(process.env.PORT ?? 3001);
-  console.log(`🚀 Server running on port ${process.env.PORT ?? 3001}`);
+  const port = process.env.PORT ?? 3001;
+  console.log(`🚀 Server running on port ${port}`);
+  console.log(`🏥 Health check available at: http://localhost:${port}/health`);
+  console.log(`📊 API available at: http://localhost:${port}/`);
 }
 bootstrap().catch((err) => console.error('Error starting server:', err));
