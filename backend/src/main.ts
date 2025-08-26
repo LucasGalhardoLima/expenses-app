@@ -23,6 +23,7 @@ async function bootstrap() {
         'http://localhost:5173',
         /\.railway\.app$/,
         /\.vercel\.app$/,
+        'https://healthcheck.railway.app', // Railway healthcheck hostname
       ],
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
@@ -40,6 +41,7 @@ async function bootstrap() {
 
     const port = process.env.PORT ?? 3001;
     console.log('🚀 Starting server on port:', port);
+    console.log('📍 PORT environment variable:', process.env.PORT ? 'Set by Railway' : 'Using default (3001)');
     
     await app.listen(port);
     
