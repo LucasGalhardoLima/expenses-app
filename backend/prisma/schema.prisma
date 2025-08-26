@@ -1,0 +1,103 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id           String          @id @default(cuid())
+  name         String          @unique
+  color        String          @default("#6B7280")
+  type         TransactionType
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  transactions Transaction[]
+
+  @@map("categories")
+}
+
+model Transaction {
+  id          String          @id @default(cuid())
+  date        DateTime
+  amount      Decimal         @db.Decimal(10, 2)
+  type        TransactionType
+  description String?
+  categoryId  String
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  category    Category        @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@index([date])
+  @@index([type])
+  @@index([categoryId])
+  @@index([date, type])
+  @@map("transactions")
+}
+
+model Budget {
+  id        String   @id @default(cuid())
+  month     String   // formato YYYY-MM
+  amount    Decimal  @db.Decimal(10, 2)
+  type      BudgetType
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([month, type])
+  @@map("budgets")
+}
+
+model CreditCard {
+  id           String              @id @default(cuid())
+  name         String
+  limit        Decimal             @db.Decimal(10, 2)
+  closingDay   Int                 // dia do fechamento (1-31)
+  dueDay       Int                 // dia do vencimento (1-31)
+  color        String              @default("#6366f1")
+  isActive     Boolean             @default(true)
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  transactions CreditCardTransaction[]
+
+  @@map("credit_cards")
+}
+
+model CreditCardCategory {
+  id           String                  @id @default(cuid())
+  name         String
+  color        String                  @default("#6B7280")
+  createdAt    DateTime                @default(now())
+  updatedAt    DateTime                @updatedAt
+  transactions CreditCardTransaction[]
+
+  @@map("credit_card_categories")
+}
+
+model CreditCardTransaction {
+  id           String              @id @default(cuid())
+  date         DateTime
+  amount       Decimal             @db.Decimal(10, 2)
+  description  String?
+  installments Int                 @default(1)
+  currentInstallment Int          @default(1)
+  categoryId   String
+  cardId       String
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  category     CreditCardCategory  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  card         CreditCard          @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  @@map("credit_card_transactions")
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+enum BudgetType {
+  INCOME_BASED    // baseado na receita do mês
+  FIXED_AMOUNT    // valor fixo definido pelo usuário
+}
