@@ -20,11 +20,12 @@ import {
   UpdateCreditCardTransactionDto,
   CreditCardCategory,
   CreditCardSummary,
+  PaginatedResponse,
 } from '../types';
 
 // Transaction API
 export const transactionApi = {
-  getAll: (params?: QueryTransactionDto): Promise<Transaction[]> =>
+  getAll: (params?: QueryTransactionDto): Promise<PaginatedResponse<Transaction>> =>
     apiClient.get('/transactions', { params }).then(res => res.data),
     
   getById: (id: string): Promise<Transaction> =>

@@ -52,6 +52,22 @@ export interface QueryTransactionDto {
   startDate?: string;
   endDate?: string;
   month?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface PaginationInfo {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  pagination: PaginationInfo;
 }
 
 export interface TransactionSummary {

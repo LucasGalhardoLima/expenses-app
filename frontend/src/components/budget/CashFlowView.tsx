@@ -2,12 +2,8 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Plus, Target } from 'lucide-react';
 import { QueryTransactionDto, Transaction, TransactionSummary, Category } from '../../types';
-import { getMonthString, generateMonthOptions, formatCurrency } from '../../utils';
+import { getMonthString, formatCurrency } from '../../utils';
 import { budgetApi } from '../../api';
-import SummaryCards from '../ui/SummaryCards';
-import TransactionList from '../ui/TransactionList';
-import FilterBar from '../ui/FilterBar';
-import FloatingActionButton from '../ui/FloatingActionButton';
 import BudgetModal from '../forms/BudgetModal';
 import { cn } from '../../lib/utils';
 
@@ -131,38 +127,6 @@ const CashFlowView: React.FC<CashFlowViewProps> = ({
           </button>
         </div>
       )}
-
-      {/* Filter Bar */}
-      <FilterBar
-        filters={filters}
-        onFilterChange={onFilterChange}
-        categories={categories}
-        monthOptions={generateMonthOptions()}
-      />
-
-      {/* Summary Cards */}
-      {summary && (
-        <SummaryCards
-          summary={summary}
-          isLoading={isLoading}
-        />
-      )}
-
-      {/* Recent Transactions */}
-      <div>
-        <h2 className="text-lg font-medium text-gray-900 mb-4">
-          Transações Recentes
-        </h2>
-        <TransactionList
-          transactions={transactions.slice(0, 10)}
-          isLoading={isLoading}
-          onEdit={onEdit}
-          onDelete={onDelete}
-        />
-      </div>
-
-      {/* Floating Action Button */}
-      <FloatingActionButton onClick={onOpenModal} />
 
       {/* Budget Modal */}
       <BudgetModal

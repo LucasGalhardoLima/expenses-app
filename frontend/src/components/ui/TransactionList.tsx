@@ -13,6 +13,7 @@ interface TransactionListProps {
   isLoading?: boolean;
   onEdit: (transactionId: string) => void;
   onDelete: (transactionId: string) => void;
+  showTitle?: boolean;
 }
 
 const TransactionList: React.FC<TransactionListProps> = ({
@@ -20,6 +21,7 @@ const TransactionList: React.FC<TransactionListProps> = ({
   isLoading,
   onEdit,
   onDelete,
+  showTitle = true,
 }) => {
   if (isLoading) {
     return (
@@ -57,39 +59,47 @@ const TransactionList: React.FC<TransactionListProps> = ({
   }
 
   return (
-    <div className="glass-effect rounded-2xl p-6">
-      <h2 className="text-lg font-semibold text-gray-900 mb-4">
-        Transações Recentes
-      </h2>
+    <div className="card">
+      {showTitle && (
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-gray-900">
+            Transações Recentes
+          </h2>
+          {/* Mobile: Show count */}
+          <span className="text-sm text-gray-500 sm:hidden">
+            {transactions.length}
+          </span>
+        </div>
+      )}
       
-      <div className="space-y-3">
+      <div className="space-y-2 sm:space-y-3">
         {transactions.map((transaction) => {
           const isIncome = transaction.type === TransactionType.INCOME;
           
           return (
             <div
               key={transaction.id}
-              className="flex items-center justify-between p-4 rounded-xl bg-white border border-gray-100 hover:border-gray-200 transition-colors group"
+              className="flex items-center justify-between p-3 sm:p-4 rounded-lg bg-gray-50 sm:bg-white border border-gray-100 hover:border-gray-200 active:bg-gray-100 transition-all group touch-manipulation"
             >
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-3 flex-1 min-w-0">
                 {/* Transaction Type Icon */}
                 <div className={`
-                  p-2 rounded-full
+                  p-2 rounded-full flex-shrink-0
                   ${isIncome 
                     ? 'bg-green-50 border border-green-200' 
                     : 'bg-red-50 border border-red-200'
                   }
                 `}>
                   {isIncome ? (
-                    <ArrowUpIcon className="w-5 h-5 text-green-600" />
+                    <ArrowUpIcon className="w-4 h-4 text-green-600" />
                   ) : (
-                    <ArrowDownIcon className="w-5 h-5 text-red-600" />
+                    <ArrowDownIcon className="w-4 h-4 text-red-600" />
                   )}
                 </div>
 
-                {/* Category Badge */}
+                {/* Category Badge - Mobile: smaller */}
                 <div 
-                  className="w-3 h-3 rounded-full"
+                  className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full flex-shrink-0"
                   style={{ backgroundColor: transaction.category.color }}
                 />
 
@@ -99,21 +109,28 @@ const TransactionList: React.FC<TransactionListProps> = ({
                     <p className="text-sm font-medium text-gray-900 truncate">
                       {transaction.description || transaction.category.name}
                     </p>
-                    <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                    {/* Desktop: Show category badge */}
+                    <span className="hidden sm:inline-flex text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
                       {transaction.category.name}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">
-                    {getRelativeDate(transaction.date)}
-                  </p>
+                  <div className="flex items-center space-x-2 mt-1">
+                    <p className="text-xs text-gray-500">
+                      {getRelativeDate(transaction.date)}
+                    </p>
+                    {/* Mobile: Show category name */}
+                    <span className="sm:hidden text-xs text-gray-400">
+                      • {transaction.category.name}
+                    </span>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
                 {/* Amount */}
                 <div className="text-right">
                   <p className={`
-                    font-semibold
+                    text-sm sm:text-base font-semibold
                     ${isIncome ? 'text-green-600' : 'text-red-600'}
                   `}>
                     {isIncome ? '+' : '-'}{formatCurrency(Math.abs(transaction.amount))}
@@ -121,22 +138,22 @@ const TransactionList: React.FC<TransactionListProps> = ({
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button
                     onClick={() => onEdit(transaction.id)}
-                    className="p-1.5 text-gray-400 hover:text-blue-600 transition-colors"
-                    aria-label="Edit transaction"
+                    className="nav-item text-gray-400 hover:text-blue-600"
+                    aria-label="Editar transação"
                   >
                     <PencilIcon className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => {
-                      if (window.confirm('Are you sure you want to delete this transaction?')) {
+                      if (window.confirm('Tem certeza que deseja excluir esta transação?')) {
                         onDelete(transaction.id);
                       }
                     }}
-                    className="p-1.5 text-gray-400 hover:text-red-600 transition-colors"
-                    aria-label="Delete transaction"
+                    className="nav-item text-gray-400 hover:text-red-600"
+                    aria-label="Excluir transação"
                   >
                     <TrashIcon className="w-4 h-4" />
                   </button>
@@ -146,6 +163,15 @@ const TransactionList: React.FC<TransactionListProps> = ({
           );
         })}
       </div>
+      
+      {/* Mobile: Load more button if many transactions */}
+      {transactions.length > 10 && (
+        <div className="mt-4 text-center sm:hidden">
+          <button className="btn-secondary text-sm px-6 py-2">
+            Ver mais transações
+          </button>
+        </div>
+      )}
     </div>
   );
 };

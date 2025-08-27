@@ -1,4 +1,10 @@
-import { IsDateString, IsEnum, IsOptional, IsString } from 'class-validator';
+import {
+  IsDateString,
+  IsEnum,
+  IsOptional,
+  IsString,
+  IsNumberString,
+} from 'class-validator';
 import { TransactionType } from '@prisma/client';
 
 export class QueryTransactionDto {
@@ -21,4 +27,12 @@ export class QueryTransactionDto {
   @IsOptional()
   @IsString()
   month?: string; // Format: YYYY-MM
+
+  @IsOptional()
+  @IsNumberString()
+  page?: string;
+
+  @IsOptional()
+  @IsNumberString()
+  limit?: string;
 }

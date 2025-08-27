@@ -57,7 +57,16 @@ export class TransactionsService {
       }
     }
 
-    return this.prisma.transaction.findMany({
+    // Pagination parameters
+    const page = query.page ? parseInt(query.page, 10) : 1;
+    const limit = query.limit ? parseInt(query.limit, 10) : 20;
+    const skip = (page - 1) * limit;
+
+    // Get total count for pagination info
+    const total = await this.prisma.transaction.count({ where });
+
+    // Get transactions with pagination
+    const transactions = await this.prisma.transaction.findMany({
       where,
       include: {
         category: true,
@@ -65,7 +74,21 @@ export class TransactionsService {
       orderBy: {
         date: 'desc',
       },
+      skip,
+      take: limit,
     });
+
+    return {
+      data: transactions,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+        hasNextPage: page < Math.ceil(total / limit),
+        hasPreviousPage: page > 1,
+      },
+    };
   }
 
   async findOne(id: string) {

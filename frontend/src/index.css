@@ -5,19 +5,135 @@
 @layer base {
   body {
     @apply bg-gray-50 text-gray-900 font-sans antialiased;
+    /* Prevent zoom on iOS */
+    -webkit-text-size-adjust: 100%;
+  }
+  
+  /* Safe area support for mobile devices */
+  .safe-area-pt {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .safe-area-pb {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .safe-area-pl {
+    padding-left: env(safe-area-inset-left);
+  }
+  
+  .safe-area-pr {
+    padding-right: env(safe-area-inset-right);
   }
 }
 
 @layer components {
+  /* Glass effect components */
   .glass-effect {
-    @apply backdrop-blur-lg backdrop-saturate-150;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    @apply backdrop-blur-lg backdrop-saturate-150 bg-white/10 border border-white/20;
   }
   
   .glass-effect-dark {
-    @apply backdrop-blur-lg backdrop-saturate-150;
-    background: rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    @apply backdrop-blur-lg backdrop-saturate-150 bg-black/10 border border-white/10;
+  }
+  
+  /* Mobile-first button styles */
+  .btn-primary {
+    @apply bg-indigo-600 text-white px-4 py-3 rounded-lg font-medium text-base;
+    @apply hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2;
+    @apply transition-colors duration-200;
+    /* Increase tap target for mobile */
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-100 text-gray-900 px-4 py-3 rounded-lg font-medium text-base;
+    @apply hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2;
+    @apply transition-colors duration-200;
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Card components optimized for mobile */
+  .card {
+    @apply bg-white rounded-xl shadow-sm border border-gray-200 p-4;
+    @apply sm:p-6;
+  }
+  
+  .card-compact {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-3;
+  }
+  
+  /* Form elements optimized for mobile */
+  .form-input {
+    @apply block w-full px-3 py-3 text-base rounded-lg border border-gray-300;
+    @apply focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500;
+    @apply transition-colors duration-200;
+    /* Increase tap target */
+    min-height: 44px;
+  }
+  
+  .form-label {
+    @apply block text-sm font-medium text-gray-700 mb-2;
+  }
+  
+  /* Touch-friendly navigation */
+  .nav-item {
+    @apply flex items-center justify-center p-3 rounded-lg transition-colors;
+    @apply hover:bg-gray-100 active:bg-gray-200;
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Loading states */
+  .skeleton {
+    @apply animate-pulse bg-gray-200 rounded;
+  }
+  
+  /* Floating Action Button */
+  .fab {
+    @apply fixed bottom-20 right-4 z-40 bg-indigo-600 text-white rounded-full p-4;
+    @apply shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500;
+    @apply transition-all duration-200 active:scale-95;
+    @apply lg:bottom-6 lg:right-6;
+    width: 56px;
+    height: 56px;
+  }
+}
+
+@layer utilities {
+  /* Mobile-specific utilities */
+  .touch-manipulation {
+    touch-action: manipulation;
+  }
+  
+  .scroll-smooth {
+    scroll-behavior: smooth;
+  }
+  
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Text ellipsis */
+  .text-ellipsis {
+    @apply truncate;
+  }
+  
+  /* Mobile spacing */
+  .spacing-mobile {
+    @apply space-y-4 sm:space-y-6;
+  }
+  
+  /* Grid responsive */
+  .grid-responsive {
+    @apply grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3;
   }
 }

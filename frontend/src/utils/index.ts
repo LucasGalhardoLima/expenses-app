@@ -3,6 +3,14 @@ import { ptBR } from 'date-fns/locale';
 
 // Format currency
 export const formatCurrency = (amount: number, currency = 'BRL'): string => {
+  // Verificar se o valor é válido
+  if (amount === null || amount === undefined || isNaN(amount)) {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency,
+    }).format(0);
+  }
+
   return new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency,

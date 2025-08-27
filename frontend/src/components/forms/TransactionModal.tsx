@@ -152,168 +152,171 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex min-h-screen items-center justify-center p-4 text-center sm:p-0">
+      {/* Mobile: Full screen modal on small screens */}
+      <div className="flex min-h-screen items-end sm:items-center justify-center sm:p-4 text-center">
         <div
           className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
           onClick={onClose}
         />
 
-        <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
-          <div className="absolute right-0 top-0 pr-4 pt-4">
-            <button
-              type="button"
-              className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              onClick={onClose}
-            >
-              <span className="sr-only">Fechar</span>
-              <X className="h-6 w-6" aria-hidden="true" />
-            </button>
-          </div>
-
-          <div className="sm:flex sm:items-start">
-            <div className="mt-3 text-center sm:ml-0 sm:mt-0 sm:text-left w-full">
-              <h3 className="text-lg font-semibold leading-6 text-gray-900 mb-4">
+        <div className="relative transform overflow-hidden rounded-t-2xl sm:rounded-lg bg-white w-full sm:w-full sm:max-w-lg text-left shadow-xl transition-all sm:my-8">
+          {/* Mobile: Handle bar */}
+          <div className="sm:hidden w-12 h-1 bg-gray-300 rounded-full mx-auto mt-3"></div>
+          
+          {/* Header */}
+          <div className="px-4 pt-5 pb-4 sm:p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">
                 {isEditing ? 'Editar Transação' : 'Nova Transação'}
               </h3>
-
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                {/* Tipo */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Tipo
-                  </label>
-                  <div className="flex space-x-4">
-                    <label className="flex items-center">
-                      <input
-                        type="radio"
-                        {...register('type')}
-                        value={TransactionType.EXPENSE}
-                        className="mr-2 text-red-600 focus:ring-red-500"
-                      />
-                      <span className="text-sm">Despesa</span>
-                    </label>
-                    <label className="flex items-center">
-                      <input
-                        type="radio"
-                        {...register('type')}
-                        value={TransactionType.INCOME}
-                        className="mr-2 text-green-600 focus:ring-green-500"
-                      />
-                      <span className="text-sm">Receita</span>
-                    </label>
-                  </div>
-                </div>
-
-                {/* Valor */}
-                <div>
-                  <label
-                    htmlFor="amount"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Valor
-                  </label>
-                  <CurrencyInput
-                    value={watch('amount') || ''}
-                    onChange={(value) => setValue('amount', value, { shouldValidate: true })}
-                    error={!!errors.amount}
-                    placeholder="0,00"
-                  />
-                  {errors.amount && (
-                    <p className="mt-1 text-sm text-red-600">{errors.amount.message}</p>
-                  )}
-                </div>
-
-                {/* Categoria */}
-                <div>
-                  <label
-                    htmlFor="categoryId"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Categoria
-                  </label>
-                  <select
-                    {...register('categoryId', { required: 'Categoria é obrigatória' })}
-                    className={cn(
-                      "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
-                      errors.categoryId && "border-red-300 focus:border-red-500 focus:ring-red-500"
-                    )}
-                  >
-                    <option value="">Selecione uma categoria</option>
-                    {filteredCategories.map((category) => (
-                      <option key={category.id} value={category.id}>
-                        {category.name}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.categoryId && (
-                    <p className="mt-1 text-sm text-red-600">{errors.categoryId.message}</p>
-                  )}
-                </div>
-
-                {/* Data */}
-                <div>
-                  <label
-                    htmlFor="date"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Data
-                  </label>
-                  <input
-                    type="date"
-                    {...register('date', { required: 'Data é obrigatória' })}
-                    className={cn(
-                      "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm",
-                      errors.date && "border-red-300 focus:border-red-500 focus:ring-red-500"
-                    )}
-                  />
-                  {errors.date && (
-                    <p className="mt-1 text-sm text-red-600">{errors.date.message}</p>
-                  )}
-                </div>
-
-                {/* Descrição */}
-                <div>
-                  <label
-                    htmlFor="description"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Descrição (Opcional)
-                  </label>
-                  <input
-                    type="text"
-                    {...register('description')}
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Adicione uma observação..."
-                  />
-                </div>
-
-                {/* Botões */}
-                <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
-                  <button
-                    type="submit"
-                    disabled={isLoading}
-                    className={cn(
-                      "inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm sm:col-start-2 sm:text-sm",
-                      "bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
-                      isLoading && "opacity-50 cursor-not-allowed"
-                    )}
-                  >
-                    {isLoading
-                      ? 'Salvando...'
-                      : isEditing
-                      ? 'Atualizar'
-                      : 'Criar'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={onClose}
-                    className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm"
-                  >
-                    Cancelar
-                  </button>
-                </div>
-              </form>
+              <button
+                type="button"
+                className="nav-item text-gray-400 hover:text-gray-500"
+                onClick={onClose}
+              >
+                <X className="h-6 w-6" />
+              </button>
             </div>
+
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              {/* Tipo */}
+              <div>
+                <label className="form-label">
+                  Tipo
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  <label className="flex items-center justify-center p-3 border rounded-lg cursor-pointer transition-colors hover:bg-gray-50">
+                    <input
+                      type="radio"
+                      {...register('type')}
+                      value={TransactionType.EXPENSE}
+                      className="sr-only"
+                    />
+                    <span className={cn(
+                      "text-sm font-medium",
+                      watchedType === TransactionType.EXPENSE 
+                        ? "text-red-600" 
+                        : "text-gray-500"
+                    )}>
+                      💸 Despesa
+                    </span>
+                  </label>
+                  <label className="flex items-center justify-center p-3 border rounded-lg cursor-pointer transition-colors hover:bg-gray-50">
+                    <input
+                      type="radio"
+                      {...register('type')}
+                      value={TransactionType.INCOME}
+                      className="sr-only"
+                    />
+                    <span className={cn(
+                      "text-sm font-medium",
+                      watchedType === TransactionType.INCOME 
+                        ? "text-green-600" 
+                        : "text-gray-500"
+                    )}>
+                      💰 Receita
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Valor */}
+              <div>
+                <label className="form-label">
+                  Valor
+                </label>
+                <CurrencyInput
+                  value={watch('amount') || ''}
+                  onChange={(value) => setValue('amount', value, { shouldValidate: true })}
+                  error={!!errors.amount}
+                  placeholder="0,00"
+                />
+                {errors.amount && (
+                  <p className="mt-1 text-sm text-red-600">{errors.amount.message}</p>
+                )}
+              </div>
+
+              {/* Categoria */}
+              <div>
+                <label className="form-label">
+                  Categoria
+                </label>
+                <select
+                  {...register('categoryId', { required: 'Categoria é obrigatória' })}
+                  className={cn(
+                    "form-input",
+                    errors.categoryId && "border-red-300 focus:border-red-500 focus:ring-red-500"
+                  )}
+                >
+                  <option value="">Selecione uma categoria</option>
+                  {filteredCategories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+                {errors.categoryId && (
+                  <p className="mt-1 text-sm text-red-600">{errors.categoryId.message}</p>
+                )}
+              </div>
+
+              {/* Data */}
+              <div>
+                <label className="form-label">
+                  Data
+                </label>
+                <input
+                  type="date"
+                  {...register('date', { required: 'Data é obrigatória' })}
+                  className={cn(
+                    "form-input",
+                    errors.date && "border-red-300 focus:border-red-500 focus:ring-red-500"
+                  )}
+                />
+                {errors.date && (
+                  <p className="mt-1 text-sm text-red-600">{errors.date.message}</p>
+                )}
+              </div>
+
+              {/* Descrição */}
+              <div>
+                <label className="form-label">
+                  Descrição (opcional)
+                </label>
+                <input
+                  type="text"
+                  {...register('description')}
+                  className="form-input"
+                  placeholder="Adicione uma descrição..."
+                />
+              </div>
+
+              {/* Buttons - Mobile optimized */}
+              <div className="pt-4 space-y-3 sm:space-y-0 sm:flex sm:flex-row-reverse sm:space-x-3 sm:space-x-reverse">
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className={cn(
+                    "btn-primary w-full sm:w-auto",
+                    isLoading && "opacity-50 cursor-not-allowed"
+                  )}
+                >
+                  {isLoading 
+                    ? 'Salvando...' 
+                    : isEditing 
+                      ? 'Atualizar' 
+                      : 'Adicionar'
+                  }
+                </button>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="btn-secondary w-full sm:w-auto"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
