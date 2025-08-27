@@ -33,18 +33,29 @@ const TransactionsPage: React.FC = () => {
     queryKey: ['transactions', filters],
     queryFn: ({ pageParam = 1 }) => 
       transactionApi.getAll({ ...filters, page: pageParam, limit: 20 }),
-    getNextPageParam: (lastPage) => 
-      lastPage.pagination.hasNextPage ? lastPage.pagination.page + 1 : undefined,
+    getNextPageParam: (lastPage) => {
+      // Verificar se lastPage e pagination existem antes de acessar hasNextPage
+      if (!lastPage || !lastPage.pagination) {
+        return undefined;
+      }
+      return lastPage.pagination.hasNextPage ? lastPage.pagination.page + 1 : undefined;
+    },
     initialPageParam: 1,
   });
 
   // Flatten all transactions from all pages
   const transactions = useMemo(() => {
-    return transactionsData?.pages.flatMap(page => page.data) || [];
+    if (!transactionsData?.pages) {
+      return [];
+    }
+    return transactionsData.pages.flatMap(page => {
+      // Verificar se page e page.data existem
+      return page?.data || [];
+    });
   }, [transactionsData]);
 
   // Get total count from first page
-  const totalTransactions = transactionsData?.pages[0]?.pagination.total || 0;
+  const totalTransactions = transactionsData?.pages?.[0]?.pagination?.total || 0;
 
   // Setup intersection observer for infinite scroll
   const { ref, inView } = useInView({
