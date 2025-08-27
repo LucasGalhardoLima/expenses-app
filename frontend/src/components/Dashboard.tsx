@@ -171,14 +171,14 @@ const Dashboard: React.FC = () => {
   }, [currentSummary, previousSummary, currentTransactions]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-snow">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 pb-20 sm:pb-6">
         {/* Header */}
         <div className="text-center sm:text-left mb-6">
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-black mb-1 sm:mb-2">
             Dashboard Financeiro
           </h1>
-          <p className="text-gray-600 text-xs sm:text-sm lg:text-base">
+          <p className="text-black/70 text-xs sm:text-sm lg:text-base">
             Análise completa das suas finanças com comparações mensais
           </p>
         </div>

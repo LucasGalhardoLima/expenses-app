@@ -27,10 +27,10 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({ stats, isLoading }) => 
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="card animate-pulse p-3 sm:p-4">
-            <div className="h-3 sm:h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-            <div className="h-6 sm:h-8 bg-gray-200 rounded w-3/4 mb-2"></div>
-            <div className="h-2 sm:h-3 bg-gray-200 rounded w-1/3"></div>
+          <div key={i} className="bg-white border border-sky-blue/10 rounded-lg shadow-sm p-3 sm:p-4 animate-pulse">
+            <div className="h-3 sm:h-4 bg-sky-blue/20 rounded w-1/2 mb-2"></div>
+            <div className="h-6 sm:h-8 bg-sky-blue/20 rounded w-3/4 mb-2"></div>
+            <div className="h-2 sm:h-3 bg-sky-blue/20 rounded w-1/3"></div>
           </div>
         ))}
       </div>
@@ -92,24 +92,24 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({ stats, isLoading }) => 
         const StatIcon = stat.icon;
         
         return (
-          <div key={index} className="card hover:shadow-md transition-shadow p-3 sm:p-4">
+          <div key={index} className="bg-white border border-sky-blue/10 rounded-lg shadow-sm hover:shadow-md hover:border-sky-blue/20 transition-all duration-200 p-3 sm:p-4">
             <div className="flex items-center justify-between mb-2 sm:mb-3">
               <div className="flex items-center min-w-0 flex-1">
                 {StatIcon && (
-                  <div className="p-1.5 sm:p-2 rounded-lg bg-gray-50 mr-2 sm:mr-3 flex-shrink-0">
-                    <StatIcon className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
+                  <div className="p-1.5 sm:p-2 rounded-lg bg-sky-blue/5 mr-2 sm:mr-3 flex-shrink-0">
+                    <StatIcon className="h-4 w-4 sm:h-5 sm:w-5 text-sky-blue" />
                   </div>
                 )}
-                <h3 className="text-xs sm:text-sm font-medium text-gray-600 truncate">{stat.title}</h3>
+                <h3 className="text-xs sm:text-sm font-medium text-black/70 truncate">{stat.title}</h3>
               </div>
               
               {stat.trend && (
                 <div className={`p-1 rounded-full flex-shrink-0 ${
                   stat.trend === 'up' 
-                    ? 'bg-green-100 text-green-600' 
+                    ? 'bg-sky-blue/10 text-sky-blue' 
                     : stat.trend === 'down'
-                      ? 'bg-red-100 text-red-600'
-                      : 'bg-gray-100 text-gray-600'
+                      ? 'bg-vista-blue/10 text-vista-blue'
+                      : 'bg-black/5 text-black/50'
                 }`}>
                   <TrendIcon className="h-3 w-3 sm:h-4 sm:w-4" />
                 </div>
@@ -117,7 +117,7 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({ stats, isLoading }) => 
             </div>
             
             <div className="mb-1 sm:mb-2">
-              <div className="text-lg sm:text-2xl font-bold text-gray-900 truncate">
+              <div className="text-lg sm:text-2xl font-bold text-black truncate">
                 {formatValue(stat.value, stat.format)}
               </div>
             </div>
@@ -125,16 +125,16 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({ stats, isLoading }) => 
             {variation && (
               <div className={`flex items-center text-xs ${
                 variation.isNeutral 
-                  ? 'text-gray-500' 
+                  ? 'text-black/50' 
                   : variation.isPositive 
-                    ? 'text-green-600' 
-                    : 'text-red-600'
+                    ? 'text-sky-blue' 
+                    : 'text-vista-blue'
               }`}>
                 {React.createElement(
                   getVariationIcon(variation.isPositive, variation.isNeutral), 
                   { className: 'h-3 w-3 mr-1 flex-shrink-0' }
                 )}
-                <span className="truncate">
+                <span className="truncate font-medium">
                   {variation.value.toFixed(1)}% vs. mês anterior
                 </span>
               </div>

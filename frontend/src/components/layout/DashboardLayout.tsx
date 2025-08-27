@@ -26,7 +26,7 @@ export default function DashboardLayout({ children }: SidebarProps) {
   const location = useLocation();
 
   return (
-    <div className="h-screen flex bg-gray-50">
+    <div className="h-screen flex bg-snow">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div
@@ -35,17 +35,17 @@ export default function DashboardLayout({ children }: SidebarProps) {
           aria-modal="true"
         >
           <div
-            className="fixed inset-0 bg-gray-600 bg-opacity-75"
+            className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
             aria-hidden="true"
             onClick={() => setSidebarOpen(false)}
           ></div>
 
           {/* Mobile sidebar */}
-          <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white">
+          <div className="relative flex-1 flex flex-col max-w-xs w-full bg-[#72DDF7] border-r border-[#5BBDE3]">
             <div className="absolute top-0 right-0 -mr-12 pt-2">
               <button
                 type="button"
-                className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white/50 bg-white/10 backdrop-blur-sm"
                 onClick={() => setSidebarOpen(false)}
               >
                 <span className="sr-only">Close sidebar</span>
@@ -55,8 +55,8 @@ export default function DashboardLayout({ children }: SidebarProps) {
 
             <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
               <div className="flex-shrink-0 flex items-center px-4">
-                <TrendingUp className="h-8 w-8 text-indigo-600" />
-                <span className="ml-3 text-xl font-semibold text-gray-900">
+                <TrendingUp className="h-8 w-8 text-white" />
+                <span className="ml-3 text-xl font-semibold text-white">
                   Expense Tracker
                 </span>
               </div>
@@ -69,16 +69,16 @@ export default function DashboardLayout({ children }: SidebarProps) {
                       to={item.href}
                       className={cn(
                         isActive
-                          ? 'bg-indigo-100 text-indigo-900'
-                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-                        'group flex items-center px-2 py-2 text-base font-medium rounded-md'
+                          ? 'bg-white/20 text-white border-r-2 border-white'
+                          : 'text-white/80 hover:bg-white/10 hover:text-white',
+                        'group flex items-center px-3 py-2 text-base font-medium rounded-lg transition-all duration-200'
                       )}
                       onClick={() => setSidebarOpen(false)}
                     >
                       <item.icon
                         className={cn(
-                          isActive ? 'text-indigo-500' : 'text-gray-400 group-hover:text-gray-500',
-                          'mr-4 flex-shrink-0 h-6 w-6'
+                          isActive ? 'text-white' : 'text-white/70 group-hover:text-white',
+                          'mr-4 flex-shrink-0 h-5 w-5'
                         )}
                         aria-hidden="true"
                       />
@@ -95,11 +95,14 @@ export default function DashboardLayout({ children }: SidebarProps) {
       {/* Static sidebar for desktop */}
       <div className="hidden md:flex md:flex-shrink-0">
         <div className="flex flex-col w-64">
-          <div className="flex flex-col h-0 flex-1 bg-white border-r border-gray-200">
+          <div 
+            className="flex flex-col h-0 flex-1 border-r shadow-sm"
+            style={{ backgroundColor: '#72DDF7', borderRightColor: '#5BBDE3' }}
+          >
             <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
               <div className="flex items-center flex-shrink-0 px-4">
-                <TrendingUp className="h-8 w-8 text-indigo-600" />
-                <span className="ml-3 text-xl font-semibold text-gray-900">
+                <TrendingUp className="h-8 w-8 text-white" />
+                <span className="ml-3 text-xl font-semibold text-white">
                   Expense Tracker
                 </span>
               </div>
@@ -112,15 +115,15 @@ export default function DashboardLayout({ children }: SidebarProps) {
                       to={item.href}
                       className={cn(
                         isActive
-                          ? 'bg-indigo-100 text-indigo-900'
-                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-                        'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
+                          ? 'bg-white/20 text-white border-r-2 border-white'
+                          : 'text-white/80 hover:bg-white/10 hover:text-white',
+                        'group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200'
                       )}
                     >
                       <item.icon
                         className={cn(
-                          isActive ? 'text-indigo-500' : 'text-gray-400 group-hover:text-gray-500',
-                          'mr-3 flex-shrink-0 h-6 w-6'
+                          isActive ? 'text-white' : 'text-white/70 group-hover:text-white',
+                          'mr-3 flex-shrink-0 h-5 w-5'
                         )}
                         aria-hidden="true"
                       />
@@ -135,11 +138,11 @@ export default function DashboardLayout({ children }: SidebarProps) {
       </div>
 
       {/* Main content */}
-      <div className="flex flex-col w-0 flex-1 overflow-hidden">
-        <div className="md:hidden pl-1 pt-1 sm:pl-3 sm:pt-3">
+      <div className="flex flex-col w-0 flex-1 overflow-hidden bg-snow">
+        <div className="md:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 bg-white border-b border-sky-blue/10">
           <button
             type="button"
-            className="-ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+            className="-ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-lg text-black/70 hover:text-black hover:bg-sky-blue/5 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-sky-blue/50 transition-all duration-200"
             onClick={() => setSidebarOpen(true)}
           >
             <span className="sr-only">Open sidebar</span>

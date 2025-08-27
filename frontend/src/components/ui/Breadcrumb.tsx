@@ -20,8 +20,8 @@ export default function Breadcrumb() {
           <Link
             to="/"
             className={cn(
-              "inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700",
-              location.pathname === '/' && "text-gray-700"
+              "inline-flex items-center text-sm font-medium text-black/70 hover:text-black transition-colors duration-200",
+              location.pathname === '/' && "text-black"
             )}
           >
             <Home className="w-4 h-4 mr-2" />
@@ -36,15 +36,15 @@ export default function Breadcrumb() {
           return (
             <li key={routeTo}>
               <div className="flex items-center">
-                <ChevronRight className="w-4 h-4 text-gray-400" />
+                <ChevronRight className="w-4 h-4 text-black/40" />
                 {isLast ? (
-                  <span className="ml-1 text-sm font-medium text-gray-700 md:ml-2">
+                  <span className="ml-1 text-sm font-medium text-black md:ml-2">
                     {pageName}
                   </span>
                 ) : (
                   <Link
                     to={routeTo}
-                    className="ml-1 text-sm font-medium text-gray-500 hover:text-gray-700 md:ml-2"
+                    className="ml-1 text-sm font-medium text-black/70 hover:text-black md:ml-2 transition-colors duration-200"
                   >
                     {pageName}
                   </Link>
