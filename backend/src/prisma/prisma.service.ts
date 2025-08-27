@@ -1,11 +1,25 @@
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
+import { getDatabaseUrl } from '../config/database.config';
 
 @Injectable()
 export class PrismaService
   extends PrismaClient
   implements OnModuleInit, OnModuleDestroy
 {
+  constructor() {
+    // Garantir que a DATABASE_URL está disponível antes de conectar
+    const databaseUrl = getDatabaseUrl();
+    
+    super({
+      datasources: {
+        db: {
+          url: databaseUrl,
+        },
+      },
+    });
+  }
+
   async onModuleInit() {
     await this.connectWithRetry();
   }
