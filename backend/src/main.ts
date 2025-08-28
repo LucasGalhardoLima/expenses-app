@@ -25,6 +25,7 @@ async function bootstrap() {
         /\.vercel\.app$/,
         'https://healthcheck.railway.app', // Railway healthcheck hostname
         'https://expensehub.dev',
+        'https://www.expensehub.dev',
       ],
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
