@@ -9,7 +9,7 @@ async function bootstrap() {
     console.log('📦 Node.js version:', process.version);
     console.log('🌍 Environment:', process.env.NODE_ENV || 'development');
     console.log('🔗 Database URL configured:', !!process.env.DATABASE_URL);
-    
+
     const app = await NestFactory.create(AppModule);
     console.log('✅ NestJS application created successfully');
 
@@ -24,6 +24,7 @@ async function bootstrap() {
         /\.railway\.app$/,
         /\.vercel\.app$/,
         'https://healthcheck.railway.app', // Railway healthcheck hostname
+        'https://expensehub.dev',
       ],
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
@@ -41,10 +42,13 @@ async function bootstrap() {
 
     const port = process.env.PORT ?? 3001;
     console.log('🚀 Starting server on port:', port);
-    console.log('📍 PORT environment variable:', process.env.PORT ? 'Set by Railway' : 'Using default (3001)');
-    
+    console.log(
+      '📍 PORT environment variable:',
+      process.env.PORT ? 'Set by Railway' : 'Using default (3001)',
+    );
+
     await app.listen(port);
-    
+
     console.log(`🚀 Server running on port ${port}`);
     console.log(
       `🏥 Health check available at: http://localhost:${port}/health`,
