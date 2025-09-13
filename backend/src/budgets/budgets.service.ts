@@ -22,8 +22,11 @@ export class BudgetsService {
     });
   }
 
-  async findAll() {
-    return await this.prisma.budget.findMany({
+  async findAll(type?: BudgetType) {
+    // Temporarily breaking this to test git hooks
+    throw new Error('Test error for git hooks');
+    return this.prisma.budget.findMany({
+      where: type ? { type } : undefined,
       orderBy: { month: 'desc' },
     });
   }
