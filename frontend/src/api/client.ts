@@ -11,7 +11,19 @@ const getApiUrl = () => {
     return LOCAL_API_URL;
   }
   
-  // In production, use PRIMARY_API_URL (Railway)
+  // Check subdomain for backend selection
+  const hostname = window.location.hostname;
+  
+  // Use Render for specific subdomains/conditions
+  if (process.env.REACT_APP_USE_RENDER === 'true' || 
+      hostname.includes('preview.') ||
+      hostname.includes('render.') ||
+      hostname.includes('test.') ||
+      hostname === 'preview.expensehub.dev') {
+    return BACKUP_API_URL; // Use Render
+  }
+  
+  // Default to Railway for main domain and other subdomains
   return PRIMARY_API_URL;
 };
 

@@ -17,7 +17,7 @@ export class AppController {
   @Get('health')
   async health() {
     const dbHealth = await this.healthService.checkHealth();
-    
+
     return {
       status: dbHealth.status,
       timestamp: new Date().toISOString(),

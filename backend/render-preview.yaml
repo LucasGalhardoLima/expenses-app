@@ -1,0 +1,25 @@
+# Render.com Blueprint File - Preview Environment
+services:
+  - type: web
+    name: expensehub-preview-backend
+    runtime: node
+    plan: starter
+    region: oregon
+    branch: main # ou uma branch específica como 'preview'
+    buildCommand: npm ci && npx prisma generate && npm run build
+    startCommand: npm run start:prod:migrate
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: NODE_ENV
+        value: preview
+      - key: APP_NAME
+        value: "ExpenseHub Preview"
+    healthCheckPath: /health
+    
+# Database dedicado para preview
+databases:
+  - name: expensehub-preview-db
+    databaseName: expensehub_preview
+    user: preview_user
+    plan: starter
