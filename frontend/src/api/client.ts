@@ -22,7 +22,7 @@ export const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 10000, // 10 second timeout
+  timeout: 30000, // Aumentado para 30 segundos
 });
 
 // Keep track of API status
@@ -59,7 +59,7 @@ apiClient.interceptors.request.use(
   }
 );
 
-// Response interceptor with failover logic
+// Response interceptor with improved retry logic
 apiClient.interceptors.response.use(
   (response) => {
     // If we get a successful response and we're using backup, try to reset to primary on next request
@@ -78,9 +78,33 @@ apiClient.interceptors.response.use(
     const isNetworkError = !error.response;
     const isServerError = error.response?.status >= 500;
     const isTimeoutError = error.code === 'ECONNABORTED';
+    const isConnectionRefused = error.code === 'ECONNREFUSED';
     
-    // If primary API fails and we haven't tried backup yet, try backup
-    if ((isNetworkError || isServerError || isTimeoutError) && !originalRequest._retry && !isUsingBackup) {
+    // Implement retry for local development (cold start issues)
+    if (process.env.NODE_ENV === 'development' && !originalRequest._retryCount) {
+      originalRequest._retryCount = 0;
+    }
+    
+    // Retry logic for local development
+    if (process.env.NODE_ENV === 'development' && 
+        (isNetworkError || isTimeoutError || isConnectionRefused) && 
+        originalRequest._retryCount < 3) {
+      
+      originalRequest._retryCount++;
+      console.log(`🔄 Retrying request (attempt ${originalRequest._retryCount}/3)...`);
+      
+      // Exponential backoff: 1s, 2s, 4s
+      const delay = Math.pow(2, originalRequest._retryCount - 1) * 1000;
+      await new Promise(resolve => setTimeout(resolve, delay));
+      
+      return apiClient.request(originalRequest);
+    }
+    
+    // Production fallback logic (if not using local development)
+    if (process.env.NODE_ENV === 'production' && 
+        (isNetworkError || isServerError || isTimeoutError) && 
+        !originalRequest._retry && !isUsingBackup) {
+      
       originalRequest._retry = true;
       
       if (switchToBackupApi()) {
@@ -100,11 +124,15 @@ apiClient.interceptors.response.use(
     
     // Log the error with context about which API failed
     const apiSource = isUsingBackup ? 'Backup (Render)' : 'Primary (Railway)';
-    console.error(`${apiSource} API Error:`, {
+    const environment = process.env.NODE_ENV === 'development' ? 'Local' : apiSource;
+    
+    console.error(`${environment} API Error:`, {
       url: error.config?.url,
       method: error.config?.method,
       status: error.response?.status,
       message: error.response?.data || error.message,
+      code: error.code,
+      retryCount: originalRequest._retryCount || 0,
       isUsingBackup
     });
     

@@ -1,9 +1,13 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
+import { HealthService } from './health/health.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    private readonly healthService: HealthService,
+  ) {}
 
   @Get()
   getHello(): string {
@@ -11,12 +15,14 @@ export class AppController {
   }
 
   @Get('health')
-  health() {
+  async health() {
+    const dbHealth = await this.healthService.checkHealth();
+    
     return {
-      status: 'ok',
+      status: dbHealth.status,
       timestamp: new Date().toISOString(),
       environment: process.env.NODE_ENV || 'development',
-      database: process.env.DATABASE_URL ? 'configured' : 'missing',
+      database: dbHealth,
       port: process.env.PORT || '3001',
       railway: {
         deploymentId: process.env.RAILWAY_DEPLOYMENT_ID || 'not-set',
@@ -25,6 +31,18 @@ export class AppController {
       },
       uptime: process.uptime(),
       memory: process.memoryUsage(),
+    };
+  }
+
+  @Get('warmup')
+  async warmup() {
+    const success = await this.healthService.warmUp();
+    return {
+      success,
+      message: success
+        ? 'Database warmed up successfully'
+        : 'Database warm up failed',
+      timestamp: new Date().toISOString(),
     };
   }
 }

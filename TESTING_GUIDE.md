@@ -1,227 +1,78 @@
-# Expenses App - Sistema de Testes Completo
+# Guia de Testes - Manual
 
-Este projeto agora possui um sistema completo de testes automatizados que garante a qualidade do código e impede que alterações quebrem funcionalidades existentes.
+## Infraestrutura de Testes Disponível
 
-## 🧪 Estrutura de Testes
+### ✅ Testes Unitários
+- **93 testes** cobrindo todos os controllers e services
+- **Comando**: `npm run test`
+- **Localização**: `src/**/*.spec.ts`
 
-### Backend
-- **Testes Unitários**: Testam funções individuais e classes isoladamente
-- **Testes de Integração**: Testam a interação entre componentes
-- **Testes E2E**: Testam fluxos completos da API
+### ✅ Testes E2E (End-to-End)
+- **18 testes** cobrindo todos os endpoints CRUD
+- **Comando**: `npm run test:e2e`
+- **Localização**: `test/**/*.e2e-spec.ts`
+- **Requisito**: Banco de dados PostgreSQL rodando na porta 5432
 
-### Frontend  
-- **Testes de Componentes**: Testam componentes React
-- **Testes de Integração**: Testam funcionalidades completas
+### ✅ Testes Completos
+- **Comando**: `npm run test:all`
+- **Execução**: Testes unitários + E2E em sequência
 
-## 🚀 Configuração Inicial
+## Cobertura de Testes
 
-```bash
-# Clone o repositório
-git clone https://github.com/LucasGalhardoLima/expenses-app.git
-cd expenses-app
+### Módulos Testados
+- ✅ **Budgets** - CRUD completo
+- ✅ **Categories** - CRUD completo  
+- ✅ **Transactions** - CRUD completo + Summary
+- ✅ **Credit Cards** - CRUD completo
 
-# Execute o script de setup (recomendado)
-chmod +x setup.sh
-./setup.sh
+### Cenários Cobertos
+- ✅ Criação de recursos
+- ✅ Listagem com filtros e paginação
+- ✅ Busca por ID
+- ✅ Atualização de recursos
+- ✅ Exclusão de recursos
+- ✅ Validação de dados inválidos
+- ✅ Tratamento de recursos não encontrados
+- ✅ Cenários de conflito (duplicatas)
 
-# OU configure manualmente:
-cd backend && npm install
-cd ../frontend && npm install
-```
-
-## 🗄️ Configuração do Banco de Dados de Teste
-
-O projeto está configurado para usar um banco PostgreSQL separado para testes:
-
-```bash
-# 1. Configure as variáveis de ambiente de teste
-cp backend/.env.example backend/.env.test
-
-# 2. Edite backend/.env.test com suas credenciais de teste:
-DATABASE_URL="postgresql://test_user:test_password@localhost:5432/expenses_test_db"
-
-# 3. Execute as migrações no banco de teste
-cd backend
-npx prisma migrate deploy --schema=./prisma/schema.prisma
-```
-
-## 🧪 Executando Testes
-
-### Backend
+## Scripts Disponíveis
 
 ```bash
-cd backend
+# Testes unitários apenas
+npm run test
 
-# Testes unitários
-npm test
-
-# Testes unitários com cobertura
-npm run test:cov
-
-# Testes E2E
+# Testes E2E apenas (requer banco)
 npm run test:e2e
 
-# Todos os testes (CI)
-npm run test:ci
+# Todos os testes
+npm run test:all
+
+# Testes com coverage
+npm run test:cov
 
 # Testes em modo watch
 npm run test:watch
 ```
 
-### Frontend
+## Observações
 
-```bash
-cd frontend
+### ❌ Removido: CI/CD Automático
+- GitHub Actions workflow removido
+- Husky git hooks removidos
+- Validação automática no push removida
 
-# Testes de componentes
-npm test
+### ✅ Mantido: Infraestrutura Manual
+- Todos os testes funcionais e prontos para execução manual
+- Scripts npm organizados e funcionais
+- Estrutura de testes robusta e completa
 
-# Testes com cobertura
-npm test -- --coverage
+## Para Executar os Testes E2E
 
-# Build de produção (teste de build)
-npm run build
-```
+1. Certifique-se que o PostgreSQL está rodando na porta 5432
+2. Configure as variáveis de ambiente no `.env`
+3. Execute: `npm run test:e2e`
 
-## 🤖 CI/CD Automatizado
-
-### GitHub Actions
-
-O projeto possui um pipeline completo no GitHub Actions que executa:
-
-- ✅ Testes unitários e E2E do backend
-- ✅ Testes de componentes do frontend  
-- ✅ Verificação de lint e formatação
-- ✅ Análise de segurança
-- ✅ Auditoria de dependências
-- ✅ Relatórios de cobertura
-
-O pipeline é executado automaticamente em:
-- Push para branches `main` e `develop`
-- Pull Requests para `main` e `develop`
-
-### Proteção da Branch Main
-
-A branch `main` está protegida e requer:
-- ✅ Pull Request aprovado
-- ✅ Todos os testes passando
-- ✅ Verificações de lint/segurança passando
-- ✅ Branch atualizada com a main
-
-## 🪝 Git Hooks Locais
-
-### Pre-commit Hook
-Executa automaticamente antes de cada commit:
-- Formatação automática do código (Prettier)
-- Verificação de lint (ESLint)
-- Correção automática de problemas simples
-
-### Pre-push Hook
-Executa automaticamente antes de cada push:
-- Todos os testes unitários
-- Todos os testes E2E
-- **Bloqueia o push se algum teste falhar**
-
-### Bypassar Hooks (Emergência)
-
-```bash
-# Apenas em emergências! Use com cuidado:
-git commit --no-verify -m "emergency fix"
-git push --no-verify
-```
-
-## 📊 Cobertura de Testes
-
-### Módulos Testados
-
-#### Backend - Operações CRUD Completas
-- ✅ **Budgets**: Create, Read, Update, Delete
-- ✅ **Categories**: Create, Read, Update, Delete  
-- ✅ **Credit Cards**: Create, Read, Update, Delete
-- ✅ **Credit Card Transactions**: Create, Read, Update, Delete
-- 🔄 **Transactions**: Em desenvolvimento
-
-#### Cenários Testados
-- ✅ Operações bem-sucedidas
-- ✅ Validação de dados de entrada
-- ✅ Tratamento de erros
-- ✅ Casos extremos (edge cases)
-- ✅ Integração com banco de dados
-- ✅ APIs REST completas
-
-### Métricas de Cobertura
-
-Execute os comandos para ver relatórios detalhados:
-
-```bash
-# Backend
-cd backend && npm run test:cov
-
-# Frontend  
-cd frontend && npm test -- --coverage
-```
-
-## 🛠️ Desenvolvimento
-
-### Adicionando Novos Testes
-
-#### Para Controllers (Backend)
-```typescript
-// src/module/module.controller.spec.ts
-describe('ModuleController', () => {
-  // Testes unitários com mocks
-});
-```
-
-#### Para Services (Backend)
-```typescript
-// src/module/module.service.spec.ts  
-describe('ModuleService', () => {
-  // Testes unitários com Prisma mockado
-});
-```
-
-#### Para E2E (Backend)
-```typescript
-// test/module/module.e2e-spec.ts
-describe('Module (e2e)', () => {
-  // Testes de integração com banco real
-});
-```
-
-#### Para Componentes (Frontend)
-```typescript
-// src/components/Component.test.tsx
-describe('Component', () => {
-  // Testes de renderização e interação
-});
-```
-
-### Executando Testes Durante Desenvolvimento
-
-```bash
-# Terminal 1: Backend em modo watch
-cd backend && npm run test:watch
-
-# Terminal 2: Frontend em modo watch  
-cd frontend && npm test
-
-# Terminal 3: Servidor de desenvolvimento
-cd backend && npm run start:dev
-cd frontend && npm start
-```
-
-## 🚨 Solução de Problemas
-
-### Testes Falhando Localmente
-
-```bash
-# 1. Limpe node_modules e reinstale
-rm -rf node_modules package-lock.json
-npm install
-
-# 2. Regenere o Prisma Client
-npx prisma generate
+**Nota**: Os testes unitários não dependem de banco de dados e sempre podem ser executados.
 
 # 3. Execute migrações do banco de teste
 npx prisma migrate deploy

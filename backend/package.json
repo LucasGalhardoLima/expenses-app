@@ -23,14 +23,11 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "test:ci": "npm run test",
+    "test:all": "npm run test && npm run test:e2e",
     "db:seed": "prisma db seed",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate deploy",
-    "prisma:seed": "npx ts-node prisma/seed.ts",
-    "prepare": "cd .. && husky install backend/.husky",
-    "pre-commit": "lint-staged",
-    "pre-push": "npm run test:ci"
+    "prisma:seed": "npx ts-node prisma/seed.ts"
   },
   "dependencies": {
     "@nestjs/cli": "^11.0.0",
@@ -60,9 +57,7 @@
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.2",
     "globals": "^16.0.0",
-    "husky": "^8.0.3",
     "jest": "^30.0.0",
-    "lint-staged": "^15.2.0",
     "prettier": "^3.4.2",
     "source-map-support": "^0.5.21",
     "supertest": "^7.0.0",
@@ -91,15 +86,5 @@
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
-  },
-  "lint-staged": {
-    "src/**/*.{ts,js}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "test/**/*.{ts,js}": [
-      "eslint --fix", 
-      "prettier --write"
-    ]
   }
 }

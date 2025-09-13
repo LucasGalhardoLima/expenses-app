@@ -6,10 +6,17 @@ import { CategoriesModule } from './categories/categories.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { BudgetsModule } from './budgets/budgets.module';
 import { CreditCardsModule } from './credit-cards/credit-cards.module';
+import { HealthService } from './health/health.service';
 
 @Module({
-  imports: [PrismaModule, CategoriesModule, TransactionsModule, BudgetsModule, CreditCardsModule],
+  imports: [
+    PrismaModule,
+    CategoriesModule,
+    TransactionsModule,
+    BudgetsModule,
+    CreditCardsModule,
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, HealthService],
 })
 export class AppModule {}

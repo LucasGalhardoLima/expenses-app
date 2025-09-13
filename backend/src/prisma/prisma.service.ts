@@ -17,6 +17,9 @@ export class PrismaService
           url: databaseUrl,
         },
       },
+      // Configurações para melhorar estabilidade da conexão
+      log: ['warn', 'error'],
+      errorFormat: 'minimal',
     });
   }
 
@@ -28,7 +31,7 @@ export class PrismaService
     await this.$disconnect();
   }
 
-  private async connectWithRetry(retries = 3, delay = 1000) {
+  private async connectWithRetry(retries = 5, delay = 2000) {
     for (let i = 0; i < retries; i++) {
       try {
         await this.$connect();
@@ -45,7 +48,10 @@ export class PrismaService
           );
           throw error;
         }
-        await new Promise((resolve) => setTimeout(resolve, delay));
+        // Exponential backoff
+        const backoffDelay = delay * Math.pow(2, i);
+        console.log(`🔄 Retrying in ${backoffDelay}ms...`);
+        await new Promise((resolve) => setTimeout(resolve, backoffDelay));
       }
     }
   }
