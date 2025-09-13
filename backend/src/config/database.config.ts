@@ -3,6 +3,14 @@
  * Constructs DATABASE_URL from environment variables for better security
  */
 export function getDatabaseUrl(): string {
+  // Para Render, usar URL específica se disponível
+  if (process.env.RENDER || process.env.RENDER_SERVICE_ID) {
+    if (process.env.RENDER_DATABASE_URL) {
+      console.log('🔧 Using Render-specific DATABASE_URL');
+      return process.env.RENDER_DATABASE_URL;
+    }
+  }
+  
   // Se DATABASE_URL já está definida (para compatibilidade com Render/outros)
   if (process.env.DATABASE_URL) {
     // Otimizar URL do Supabase para melhor performance
