@@ -6,10 +6,18 @@ export function getDatabaseUrl(): string {
   // Se DATABASE_URL já está definida (para compatibilidade com Render/outros)
   if (process.env.DATABASE_URL) {
     // Otimizar URL do Supabase para melhor performance
-    const url = process.env.DATABASE_URL;
+    let url = process.env.DATABASE_URL;
     
     // Se for Supabase, adicionar parâmetros de otimização
     if (url.includes('supabase.com')) {
+      // Para Render, forçar porta 6543 (Transaction Mode) que é mais estável
+      if (process.env.RENDER || process.env.RENDER_SERVICE_ID) {
+        console.log(
+          '🔧 Render environment detected, optimizing for Transaction Mode...',
+        );
+        url = url.replace(':5432', ':6543'); // Session Mode → Transaction Mode
+      }
+      
       const hasParams = url.includes('?');
       const separator = hasParams ? '&' : '?';
       
@@ -22,7 +30,12 @@ export function getDatabaseUrl(): string {
         'application_name=expenses-app', // Nome da aplicação
       ].join('&');
       
-      return `${url}${separator}${optimizations}`;
+      const optimizedUrl = `${url}${separator}${optimizations}`;
+      console.log(
+        '🗄️ Database URL optimized for Supabase:',
+        optimizedUrl.replace(/:[^:@]*@/, ':***@'),
+      );
+      return optimizedUrl;
     }
     
     return url;
