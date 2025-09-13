@@ -7,6 +7,7 @@ import { TransactionsModule } from './transactions/transactions.module';
 import { BudgetsModule } from './budgets/budgets.module';
 import { CreditCardsModule } from './credit-cards/credit-cards.module';
 import { HealthService } from './health/health.service';
+import { KeepAliveService } from './health/keep-alive.service';
 
 @Module({
   imports: [
@@ -17,6 +18,6 @@ import { HealthService } from './health/health.service';
     CreditCardsModule,
   ],
   controllers: [AppController],
-  providers: [AppService, HealthService],
+  providers: [AppService, HealthService, KeepAliveService],
 })
 export class AppModule {}

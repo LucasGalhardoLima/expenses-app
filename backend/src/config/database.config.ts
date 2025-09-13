@@ -5,7 +5,27 @@
 export function getDatabaseUrl(): string {
   // Se DATABASE_URL já está definida (para compatibilidade com Render/outros)
   if (process.env.DATABASE_URL) {
-    return process.env.DATABASE_URL;
+    // Otimizar URL do Supabase para melhor performance
+    const url = process.env.DATABASE_URL;
+    
+    // Se for Supabase, adicionar parâmetros de otimização
+    if (url.includes('supabase.com')) {
+      const hasParams = url.includes('?');
+      const separator = hasParams ? '&' : '?';
+      
+      // Parâmetros otimizados para Supabase
+      const optimizations = [
+        'pgbouncer=true', // Use pgbouncer para pooling
+        'connection_limit=3', // Limite de conexões
+        'pool_timeout=10', // Timeout do pool
+        'connect_timeout=30', // Timeout de conexão
+        'application_name=expenses-app', // Nome da aplicação
+      ].join('&');
+      
+      return `${url}${separator}${optimizations}`;
+    }
+    
+    return url;
   }
 
   // Construir DATABASE_URL a partir de componentes separados (mais seguro)

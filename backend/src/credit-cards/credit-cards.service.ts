@@ -57,17 +57,54 @@ export class CreditCardsService {
   }
 
   // Credit Card Transaction CRUD
-  async createTransaction(createTransactionDto: CreateCreditCardTransactionDto) {
-    return await this.prisma.creditCardTransaction.create({
-      data: {
-        ...createTransactionDto,
-        date: new Date(createTransactionDto.date),
-      },
-      include: {
-        category: true,
-        card: true,
-      },
-    });
+  async createTransaction(
+    createTransactionDto: CreateCreditCardTransactionDto,
+  ) {
+    try {
+      console.log(
+        'Creating credit card transaction with data:',
+        createTransactionDto,
+      );
+
+      // Verificar se o cartão existe
+      const card = await this.prisma.creditCard.findUnique({
+        where: { id: createTransactionDto.cardId },
+      });
+
+      if (!card) {
+        throw new Error(
+          `Credit card with ID ${createTransactionDto.cardId} not found`,
+        );
+      }
+
+      // Verificar se a categoria existe
+      const category = await this.prisma.creditCardCategory.findUnique({
+        where: { id: createTransactionDto.categoryId },
+      });
+
+      if (!category) {
+        throw new Error(
+          `Category with ID ${createTransactionDto.categoryId} not found`,
+        );
+      }
+
+      const result = await this.prisma.creditCardTransaction.create({
+        data: {
+          ...createTransactionDto,
+          date: new Date(createTransactionDto.date),
+        },
+        include: {
+          category: true,
+          card: true,
+        },
+      });
+
+      console.log('Credit card transaction created successfully:', result.id);
+      return result;
+    } catch (error) {
+      console.error('Error creating credit card transaction:', error);
+      throw error;
+    }
   }
 
   async findAllTransactions(cardId?: string) {
@@ -81,7 +118,10 @@ export class CreditCardsService {
     });
   }
 
-  async updateTransaction(id: string, updateTransactionDto: UpdateCreditCardTransactionDto) {
+  async updateTransaction(
+    id: string,
+    updateTransactionDto: UpdateCreditCardTransactionDto,
+  ) {
     const data: any = { ...updateTransactionDto };
     if (updateTransactionDto.date) {
       data.date = new Date(updateTransactionDto.date);
