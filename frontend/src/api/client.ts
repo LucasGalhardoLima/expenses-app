@@ -11,18 +11,22 @@ const getApiUrl = () => {
     return LOCAL_API_URL;
   }
   
-  // Check subdomain for backend selection
   const hostname = window.location.hostname;
+  console.log('🌐 Current hostname:', hostname);
   
   // Use Render for specific subdomains/conditions
-  if (process.env.REACT_APP_USE_RENDER === 'true' || 
+  const shouldUseRender = process.env.REACT_APP_USE_RENDER === 'true' || 
       hostname.includes('preview.') ||
       hostname.includes('render.') ||
       hostname.includes('test.') ||
-      hostname === 'preview.expensehub.dev') {
+      hostname === 'preview.expensehub.dev';
+      
+  if (shouldUseRender) {
+    console.log('🔄 Using Render backend:', BACKUP_API_URL);
     return BACKUP_API_URL; // Use Render
   }
   
+  console.log('🚂 Using Railway backend:', PRIMARY_API_URL);
   // Default to Railway for main domain and other subdomains
   return PRIMARY_API_URL;
 };

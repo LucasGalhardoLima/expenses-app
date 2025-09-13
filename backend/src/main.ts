@@ -26,6 +26,10 @@ async function bootstrap() {
         'https://healthcheck.railway.app', // Railway healthcheck hostname
         'https://expensehub.dev',
         'https://www.expensehub.dev',
+        'https://preview.expensehub.dev',
+        'https://test.expensehub.dev',
+        'https://app.expensehub.dev',
+        /\.expensehub\.dev$/,
       ],
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
