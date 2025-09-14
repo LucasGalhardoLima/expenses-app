@@ -10,12 +10,12 @@ export function getDatabaseUrl(): string {
       return process.env.RENDER_DATABASE_URL;
     }
   }
-  
+
   // Se DATABASE_URL já está definida (para compatibilidade com Render/outros)
   if (process.env.DATABASE_URL) {
     // Otimizar URL do Supabase para melhor performance
     let url = process.env.DATABASE_URL;
-    
+
     // Se for Supabase, adicionar parâmetros de otimização
     if (url.includes('supabase.com')) {
       // Para Render, forçar porta 6543 (Transaction Mode) que é mais estável
@@ -25,10 +25,10 @@ export function getDatabaseUrl(): string {
         );
         url = url.replace(':5432', ':6543'); // Session Mode → Transaction Mode
       }
-      
+
       const hasParams = url.includes('?');
       const separator = hasParams ? '&' : '?';
-      
+
       // Parâmetros otimizados para Supabase
       const optimizations = [
         'pgbouncer=true', // Use pgbouncer para pooling
@@ -37,7 +37,7 @@ export function getDatabaseUrl(): string {
         'connect_timeout=30', // Timeout de conexão
         'application_name=expenses-app', // Nome da aplicação
       ].join('&');
-      
+
       const optimizedUrl = `${url}${separator}${optimizations}`;
       console.log(
         '🗄️ Database URL optimized for Supabase:',
@@ -45,7 +45,7 @@ export function getDatabaseUrl(): string {
       );
       return optimizedUrl;
     }
-    
+
     return url;
   }
 

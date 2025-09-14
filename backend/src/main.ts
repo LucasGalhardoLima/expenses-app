@@ -46,19 +46,20 @@ async function bootstrap() {
     console.log('✅ Prisma retry interceptor configured');
 
     const port = process.env.PORT ?? 3001;
-    console.log('🚀 Starting server on port:', port);
+    const host = process.env.HOST ?? '0.0.0.0'; // Bind to all interfaces for cloud platforms
+    console.log('🚀 Starting server on:', `${host}:${port}`);
     console.log(
       '📍 PORT environment variable:',
-      process.env.PORT ? 'Set by Railway' : 'Using default (3001)',
+      process.env.PORT
+        ? `Set by ${process.env.RENDER ? 'Render' : 'Railway'}`
+        : 'Using default (3001)',
     );
 
-    await app.listen(port);
+    await app.listen(port, host);
 
-    console.log(`🚀 Server running on port ${port}`);
-    console.log(
-      `🏥 Health check available at: http://localhost:${port}/health`,
-    );
-    console.log(`📊 API available at: http://localhost:${port}/`);
+    console.log(`🚀 Server running on ${host}:${port}`);
+    console.log(`🏥 Health check available at: http://${host}:${port}/health`);
+    console.log(`📊 API available at: http://${host}:${port}/`);
   } catch (error) {
     console.error('❌ Failed to start application:', error);
     process.exit(1);
