@@ -4,6 +4,8 @@ import { CreateCreditCardDto } from './dto/create-credit-card.dto';
 import { UpdateCreditCardDto } from './dto/update-credit-card.dto';
 import { CreateCreditCardTransactionDto } from './dto/create-credit-card-transaction.dto';
 import { UpdateCreditCardTransactionDto } from './dto/update-credit-card-transaction.dto';
+import { CreateCreditCardCategoryDto } from './dto/create-credit-card-category.dto';
+import { UpdateCreditCardCategoryDto } from './dto/update-credit-card-category.dto';
 
 @Injectable()
 export class CreditCardsService {
@@ -147,6 +149,37 @@ export class CreditCardsService {
   async findAllCategories() {
     return await this.prisma.creditCardCategory.findMany({
       orderBy: { name: 'asc' },
+    });
+  }
+
+  async createCategory(createCategoryDto: CreateCreditCardCategoryDto) {
+    return await this.prisma.creditCardCategory.create({
+      data: {
+        name: createCategoryDto.name,
+        color: createCategoryDto.color || '#6B7280',
+      },
+    });
+  }
+
+  async findCategoryById(id: string) {
+    return await this.prisma.creditCardCategory.findUnique({
+      where: { id },
+    });
+  }
+
+  async updateCategory(
+    id: string,
+    updateCategoryDto: UpdateCreditCardCategoryDto,
+  ) {
+    return await this.prisma.creditCardCategory.update({
+      where: { id },
+      data: updateCategoryDto,
+    });
+  }
+
+  async removeCategory(id: string) {
+    return await this.prisma.creditCardCategory.delete({
+      where: { id },
     });
   }
 

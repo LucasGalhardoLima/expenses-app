@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { X } from 'lucide-react';
-import { creditCardApi } from '../../api';
+import { creditCardApi, categoryApi } from '../../api';
 import { CreateCreditCardTransactionDto } from '../../types';
 import { format } from 'date-fns';
 import { cn } from '../../lib/utils';
@@ -63,11 +63,14 @@ const CreditCardTransactionModal: React.FC<CreditCardTransactionModalProps> = ({
     }
   });
 
-  // Fetch credit card categories
-  const { data: categories = [] } = useQuery({
-    queryKey: ['credit-card-categories'],
-    queryFn: creditCardApi.getAllCategories,
+  // Fetch credit card categories (use normal categories filtered by EXPENSE type)
+  const { data: allCategories = [] } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => categoryApi.getAll(),
   });
+
+  // Filter categories to show only EXPENSE categories for credit card transactions
+  const categories = allCategories.filter((category: any) => category.type === 'EXPENSE');
 
   const createMutation = useMutation({
     mutationFn: creditCardApi.createTransaction,
