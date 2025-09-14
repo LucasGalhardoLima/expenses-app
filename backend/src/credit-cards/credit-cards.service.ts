@@ -222,25 +222,80 @@ export class CreditCardsService {
       throw new Error('Card not found');
     }
 
-    const transactions = await this.prisma.creditCardTransaction.findMany({
-      where: {
-        cardId,
-        date: {
-          gte: startDate,
-          lte: endDate,
-        },
-      },
-      include: {
-        category: true,
-      },
-      orderBy: { date: 'desc' },
+    // Buscar TODAS as transações do cartão para calcular o uso total do limite
+    const allTransactions = await this.prisma.creditCardTransaction.findMany({
+      where: { cardId },
+      include: { category: true },
     });
 
-    const totalAmount = transactions.reduce((sum, transaction) => {
-      return sum + Number(transaction.amount);
+    // Calcular o valor total usado no limite (todas as transações pendentes)
+    let totalUsedLimit = 0;
+    
+    // Array para armazenar as transações que aparecem na fatura do mês
+    const billTransactions: any[] = [];
+
+    for (const transaction of allTransactions) {
+      const transactionDate = new Date(transaction.date);
+      const amount = Number(transaction.amount);
+      
+      // Se não é parcelada, adiciona ao limite total usado
+      if (transaction.installments <= 1) {
+        totalUsedLimit += amount;
+        
+        // Se a transação está no período da fatura, adiciona à lista
+        if (transactionDate >= startDate && transactionDate <= endDate) {
+          billTransactions.push({
+            ...transaction,
+            amount: amount,
+          });
+        }
+      } else {
+        // Para transações parceladas
+        const installmentAmount = amount / transaction.installments;
+        
+        // Adiciona ao limite total usado (valor total da compra)
+        totalUsedLimit += amount;
+        
+        // Calcular quais parcelas vencem no mês da fatura
+        for (let i = 0; i < transaction.installments; i++) {
+          const installmentDate = new Date(transactionDate);
+          installmentDate.setMonth(installmentDate.getMonth() + i);
+          
+          // Se a parcela vence no mês da fatura, adiciona à lista
+          if (
+            installmentDate.getFullYear() === year &&
+            installmentDate.getMonth() === monthNumber - 1
+          ) {
+            billTransactions.push({
+              ...transaction,
+              amount: installmentAmount,
+              currentInstallment: i + 1,
+              isInstallment: true,
+              installmentDate: installmentDate,
+            });
+          }
+        }
+      }
+    }
+
+    // Ordenar transações da fatura por data
+    billTransactions.sort((a, b) => {
+      const dateA = a.isInstallment
+        ? new Date(a.installmentDate as Date)
+        : new Date(a.date as Date);
+      const dateB = b.isInstallment
+        ? new Date(b.installmentDate as Date)
+        : new Date(b.date as Date);
+      return dateB.getTime() - dateA.getTime();
+    });
+
+    // Calcular total da fatura (apenas as transações/parcelas do mês)
+    const totalBillAmount = billTransactions.reduce((sum, transaction) => {
+      return sum + transaction.amount;
     }, 0);
 
-    const usagePercentage = (totalAmount / Number(card.limit)) * 100;
+    // Calcular percentual de uso do limite baseado no total usado
+    const usagePercentage = (totalUsedLimit / Number(card.limit)) * 100;
 
     // Calculate due date for the month
     const dueDate = new Date(year, monthNumber - 1, Number(card.dueDay));
@@ -252,14 +307,12 @@ export class CreditCardsService {
       cardId: card.id,
       cardName: card.name,
       limit: Number(card.limit),
-      totalAmount,
+      totalAmount: totalBillAmount,
+      totalUsedLimit: totalUsedLimit,
       usagePercentage,
       dueDate: dueDate.toISOString(),
-      transactionCount: transactions.length,
-      transactions: transactions.map((t) => ({
-        ...t,
-        amount: Number(t.amount),
-      })),
+      transactionCount: billTransactions.length,
+      transactions: billTransactions,
     };
   }
 }

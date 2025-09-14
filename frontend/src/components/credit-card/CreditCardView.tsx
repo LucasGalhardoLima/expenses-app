@@ -131,7 +131,7 @@ const CreditCardView: React.FC = () => {
                 <div className="ml-3">
                   <p className="text-sm font-medium text-purple-600">Limite Disponível</p>
                   <p className="text-2xl font-bold text-purple-900">
-                    {formatCurrency(bill.limit - bill.totalAmount)}
+                    {formatCurrency(bill.limit - (bill.totalUsedLimit || bill.totalAmount))}
                   </p>
                 </div>
               </div>
